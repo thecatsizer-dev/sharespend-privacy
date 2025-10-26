@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - ShareSpend v2.2</title>
+    <title>Privacy Policy - ShareSpend v1.0</title>
     <style>
         * {
             margin: 0;
@@ -211,12 +211,48 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔒 Privacy Policy - ShareSpend v2.2</h1>
+        <h1>🔒 Privacy Policy - ShareSpend v1.0</h1>
         
         <div class="meta-info">
             <p><strong>Last Updated:</strong> October 27, 2025</p>
-            <p><strong>App Version:</strong> 2.0.1</p>
+            <p><strong>App Version:</strong> 1.0</p>
         </div>
+
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin-bottom: 30px; text-align: center;">
+            <h3 style="color: white; margin-bottom: 15px; font-size: 1.5em;">🌍 Choose Your Language / Choisissez votre langue</h3>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">This privacy policy is available in 8 languages. Select your preferred language below:</p>
+            
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px;">
+                <a href="#en" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇬🇧 English
+                </a>
+                <a href="#fr" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇫🇷 Français
+                </a>
+                <a href="#it" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇮🇹 Italiano
+                </a>
+                <a href="#es" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇪🇸 Español
+                </a>
+                <a href="#de" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇩🇪 Deutsch
+                </a>
+                <a href="#pt" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇵🇹 Português
+                </a>
+                <a href="#nl" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇳🇱 Nederlands
+                </a>
+                <a href="#pl" style="background: white; color: #667eea; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    🇵🇱 Polski
+                </a>
+            </div>
+            
+            <p style="color: rgba(255,255,255,0.85); margin-top: 20px; font-size: 0.95em;">📧 Questions? Contact us: <a href="mailto:thecatsizer@gmail.com" style="color: white; text-decoration: underline;">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="en"></div>
 
         <h2>1. Introduction</h2>
         <p>Welcome to <strong>ShareSpend</strong>, a shared expense management application developed by <strong>CatSizer Lab</strong>.</p>
@@ -256,7 +292,7 @@
             <li><strong>Item list</strong> (name, price)</li>
             <li><strong>Total amount</strong></li>
             <li><strong>Expense date</strong></li>
-            <li><strong>Currency used</strong> (17 supported: EUR, USD, GBP, CHF, JPY, CAD, AUD, CNY, INR, BRL, MAD, KRW, RUB, AED, SAR, EGP, TND)</li>
+            <li><strong>Currency used</strong> (14 supported: EUR, USD, GBP, CHF, JPY, CAD, AUD, CNY, INR, BRL, MAD, KRW, RUB, MXN)</li>
             <li><strong>Category</strong> (food, transport, etc.)</li>
             <li><strong>Participants</strong> (names and splits)</li>
         </ul>
@@ -314,10 +350,9 @@
         <h3>4.1 Core Features</h3>
         <ul>
             <li><strong>OCR Scanning</strong>: Text extraction from receipts (processed <strong>locally</strong>, images <strong>NOT uploaded</strong> to our servers)</li>
-            <li><strong>Multi-Currency OCR</strong>: Automatic detection of 17 currencies (EUR, USD, GBP, CHF, JPY, CAD, AUD, CNY, INR, BRL, MAD, KRW, RUB, AED, SAR, EGP, TND)
+            <li><strong>Multi-Currency OCR</strong>: Automatic detection of 14 currencies (EUR, USD, GBP, CHF, JPY, CAD, AUD, CNY, INR, BRL, MAD, KRW, RUB, MXN)
                 <ul>
                     <li>Detection via symbols/patterns on receipt (local OCR)</li>
-                    <li>RTL (Right-to-Left) script support for Arabic currencies (AED, SAR, EGP, TND)</li>
                     <li>Device language fallback if no currency detected</li>
                 </ul>
             </li>
@@ -587,7 +622,7 @@
         <div class="contact-info">
             <p><strong>CNIL:</strong> <a href="https://www.cnil.fr/" target="_blank">https://www.cnil.fr/</a></p>
             <p><strong>Email:</strong> <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a> (we will try to resolve the issue before complaint)</p>
-        </div>
+            </div>
 
         <h2>9. Children's Data</h2>
         <p>ShareSpend is intended for <strong>users aged 16 and older</strong> (13 with parental consent in some countries).</p>
@@ -627,7 +662,7 @@
         <h3>11.3 Data Stored Locally (SharedPreferences)</h3>
         <p>The following preferences are stored <strong>only on your device</strong>:</p>
         <ul>
-            <li><strong>App language</strong> (fr, en, es, etc.)</li>
+            <li><strong>App language</strong> (en, fr, it, es, de, pt, nl, pl)</li>
             <li><strong>Theme</strong> (light, dark, system)</li>
             <li><strong>Default currency</strong> (EUR, USD, etc.)</li>
             <li><strong>Automatic rounding</strong> (none, 0.50, 1.00)</li>
@@ -673,7 +708,7 @@
         </ul>
         <p><strong>Data NOT visible:</strong></p>
         <ul>
-          <li>Your email (unless manually shared)</li>
+            <li>Your email (unless manually shared)</li>
             <li>Your personal expenses (solo mode)</li>
             <li>Your budgets</li>
             <li>Your other groups</li>
@@ -1019,29 +1054,23 @@
             <li><strong>CCPA</strong>: California Consumer Privacy Act (California)</li>
             <li><strong>Soft delete</strong>: Logical deletion (marked as deleted, not yet permanently erased)</li>
             <li><strong>Token</strong>: Temporary access key (invitations)</li>
-            <li><strong>RTL</strong>: Right-to-Left (script direction for Arabic languages)</li>
         </ul>
 
         <h2>18. Version and History</h2>
-        <p><strong>Current Version:</strong> 2.2 (October 27, 2025)</p>
+        <p><strong>Current Version:</strong> 1.0 (October 27, 2025)</p>
         
-        <p><strong>Major Changes from v2.1:</strong></p>
+        <p><strong>Initial Release Features:</strong></p>
         <ul>
-            <li class="check">✅ Added multi-currency OCR details (17 currencies)</li>
-            <li class="check">✅ Added RTL script support clarification</li>
-            <li class="check">✅ Fixed § 3.5 - Added FCM token and device language</li>
-            <li class="check">✅ Fixed § 4.1 - Added multi-currency detection details</li>
-            <li class="check">✅ Fixed § 6.1 - Clarified public read for groups/tokens</li>
-            <li class="check">✅ Fixed § 13.3 - Disputes NOT moderated (local validation only)</li>
-            <li class="check">✅ Fixed § 13.6 - Removed Perspective API (not used in prod)</li>
-            <li class="check">✅ Fixed § 13.8 - Added all Cloud Functions with accurate list</li>
-            <li class="check">✅ Added RTL to glossary</li>
-        </ul>
-
-        <p><strong>Previous Versions:</strong></p>
-        <ul>
-            <li>v2.1 (October 27, 2025): Added specific data processing</li>
-            <li>v1.0 (January 15, 2025): Initial version</li>
+            <li class="check">✅ Firebase Authentication (Google Sign-In + Email/Password)</li>
+            <li class="check">✅ Group expense sharing with QR invitations</li>
+            <li class="check">✅ Multiple payers support (shared payments)</li>
+            <li class="check">✅ Smart budgets with alerts (80% & 100%)</li>
+            <li class="check">✅ Push notifications (FCM)</li>
+            <li class="check">✅ Multi-currency OCR (14 currencies)</li>
+            <li class="check">✅ 8 languages (EN, FR, IT, ES, DE, PT, NL, PL)</li>
+            <li class="check">✅ Dark mode default</li>
+            <li class="check">✅ Local receipt processing (Google ML Kit)</li>
+            <li class="check">✅ GDPR & CCPA compliant</li>
         </ul>
 
         <h2>19. Policy Acceptance</h2>
@@ -1064,11 +1093,60 @@
             <li><strong>CNIL (France):</strong> <a href="https://www.cnil.fr/" target="_blank">https://www.cnil.fr/</a></li>
         </ul>
 
+        <div id="fr" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇫🇷 Version Française</h2>
+        <div class="warning">
+            <p><strong>Note:</strong> La version française complète sera disponible prochainement. En attendant, veuillez consulter la version anglaise ci-dessus.</p>
+            <p><strong>Contact:</strong> Pour toute question en français, contactez <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="it" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇮🇹 Versione Italiana</h2>
+        <div class="warning">
+            <p><strong>Nota:</strong> La versione italiana completa sarà disponibile a breve. Nel frattempo, consultare la versione inglese sopra.</p>
+            <p><strong>Contatto:</strong> Per domande in italiano, contattare <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="es" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇪🇸 Versión Española</h2>
+        <div class="warning">
+            <p><strong>Nota:</strong> La versión española completa estará disponible próximamente. Mientras tanto, consulte la versión en inglés arriba.</p>
+            <p><strong>Contacto:</strong> Para preguntas en español, contactar <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="de" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇩🇪 Deutsche Version</h2>
+        <div class="warning">
+            <p><strong>Hinweis:</strong> Die vollständige deutsche Version wird in Kürze verfügbar sein. In der Zwischenzeit lesen Sie bitte die englische Version oben.</p>
+            <p><strong>Kontakt:</strong> Für Fragen auf Deutsch kontaktieren Sie <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="pt" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇵🇹 Versão Portuguesa</h2>
+        <div class="warning">
+            <p><strong>Nota:</strong> A versão portuguesa completa estará disponível em breve. Enquanto isso, consulte a versão em inglês acima.</p>
+            <p><strong>Contato:</strong> Para perguntas em português, entre em contato com <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="nl" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇳🇱 Nederlandse Versie</h2>
+        <div class="warning">
+            <p><strong>Opmerking:</strong> De volledige Nederlandse versie komt binnenkort beschikbaar. Raadpleeg ondertussen de Engelse versie hierboven.</p>
+            <p><strong>Contact:</strong> Voor vragen in het Nederlands, neem contact op met <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
+        <div id="pl" style="margin-top: 80px;"></div>
+        <h2 style="color: #4A90E2; border-bottom: 3px solid #4A90E2; padding-bottom: 10px;">🇵🇱 Polska Wersja</h2>
+        <div class="warning">
+            <p><strong>Uwaga:</strong> Pełna polska wersja będzie wkrótce dostępna. W międzyczasie zapoznaj się z angielską wersją powyżej.</p>
+            <p><strong>Kontakt:</strong> W przypadku pytań w języku polskim, skontaktuj się z <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
+        </div>
+
         <div class="footer">
             <p><strong>Thank you for using ShareSpend! 🎉</strong></p>
             <p><em>This privacy policy has been carefully drafted to protect your rights while providing you with maximum transparency about our practices.</em></p>
             <p style="margin-top: 20px; color: #999; font-size: 0.85em;">
-                © 2025 CatSizer Lab - ShareSpend v2.2<br>
+                © 2025 CatSizer Lab - ShareSpend v1.0<br>
                 Last updated: October 27, 2025
             </p>
         </div>
