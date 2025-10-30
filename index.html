@@ -442,12 +442,7 @@
         </table>
 
         <p><strong>All these services are GDPR compliant.</strong></p>
-
-         <strong>Note:</strong> The Google Perspective API is actively used in production for content moderation purposes. 
-          Only necessary text fragments are transmitted, and no personal or identifying information is shared or retained.
-         </p>
         
-
         <h3>5.3 Legal Obligations</h3>
         <p>We may disclose your data if required by law (court order, competent authority).</p>
 
@@ -798,21 +793,17 @@
         </div>
 
         <h3>13.6 Content Moderation</h3>
-        <p>To protect all users, we use:</p>
-        <p><strong>Local moderation only:</strong></p>
-        <ul>
-            <li>Forbidden words list (insults, spam)</li>
-            <li>Length verification (3-100 characters)</li>
-        </ul>
-        <div class="warning">
-            <p><strong>API moderation NOT used:</strong></p>
-            <ul>
-                <li>Google Perspective API is <strong>NOT used in production</strong></li>
-                <li>Only local validation applied</li>
-                <li>No external API calls for moderation</li>
-            </ul>
-        </div>
-        <p><strong>Legal Basis:</strong> Legitimate interest (community safety) - Art. 6(1)(f) GDPR</p>
+<p>To protect all users, we use <strong>local moderation only</strong>:</p>
+<ul>
+    <li>Forbidden words list (insults, spam)</li>
+    <li>Length verification (3-100 characters)</li>
+    <li>Spam detection (repeated words)</li>
+    <li>Excessive caps detection</li>
+</ul>
+<div class="important">
+    <p><strong>Important:</strong> No external API is used for moderation. All content validation is performed locally on your device or via Firebase Cloud Functions.</p>
+</div>
+<p><strong>Legal Basis:</strong> Legitimate interest (community safety) - Art. 6(1)(f) GDPR</p>
 
         <h3>13.7 Receipt Templates</h3>
         <p>To improve OCR scan accuracy, ShareSpend memorizes:</p>
