@@ -551,12 +551,36 @@
             </tbody>
         </table>
 
+        <tr>
+  <td><strong>Debt reminders</strong></td>
+  <td>7 days</td>
+  <td>Rate limiting (2/day per pair)</td>
+</tr>
+<tr>
+  <td><strong>Empty groups</strong></td>
+  <td>90 days after last activity</td>
+  <td>Storage optimization</td>
+</tr>
+<tr>
+  <td><strong>Resolved reports</strong></td>
+  <td>1 year then archived</td>
+  <td>Legal compliance</td>
+</tr>
+
         <h3>7.2 Automatic Deletion</h3>
         <ul>
             <li><strong>Soft delete groups</strong>: Marked as deleted for you, permanently deleted when all members have deleted it</li>
             <li><strong>Expired tokens</strong>: Automatic cleanup via Cloud Functions</li>
             <li><strong>Ephemeral documents</strong>: Push notifications deleted after sending</li>
         </ul>
+        <ul>
+  <li><strong>Soft delete groups</strong>: Marked as deleted for you, permanently deleted when all members have deleted it</li>
+  <li><strong>Expired tokens</strong>: Automatic cleanup via Cloud Functions (30 days)</li>
+  <li><strong>Ephemeral documents</strong>: Push notifications deleted after sending</li>
+  <li><strong>Debt reminders</strong>: Deleted after 7 days (rate limiting only)</li>
+  <li><strong>Empty groups</strong>: Deleted after 90 days of inactivity (0 active members)</li>
+  <li><strong>Resolved reports</strong>: Archived after 1 year (moved to reports_archive collection)</li>
+</ul>
 
         <h2>8. Your Rights (GDPR)</h2>
         <p>As a European user, you have the following rights:</p>
