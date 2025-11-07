@@ -214,7 +214,7 @@
         <h1>🔒 Privacy Policy - ShareSpend v1.0</h1>
         
         <div class="meta-info">
-            <p><strong>Last Updated:</strong> October 27, 2025</p>
+            <p><strong>Last Updated:</strong> November 7, 2025</p>
             <p><strong>App Version:</strong> 1.0</p>
         </div>
 
@@ -279,11 +279,21 @@
         <ul>
             <li><strong>Email</strong> (if signing in with email/password)</li>
             <li><strong>Username</strong> (auto-generated or customized)</li>
-            <li><strong>Profile photo</strong> (if signing in via Google)</li>
+            <li><strong>Profile photo URL</strong> (if signing in via Google, stored in Firestore for offline display)</li>
             <li><strong>Firebase unique identifier</strong> (UID)</li>
             <li><strong>FCM token</strong> (for push notifications)</li>
         </ul>
         <p><strong>Legal Basis:</strong> Contract execution (service provision) - Art. 6(1)(b) GDPR</p>
+
+        <div class="important">
+            <p><strong>⚠️ Important - Profile Photo Visibility:</strong></p>
+            <ul>
+                <li>Your Google profile photo URL is <strong>stored in Firestore</strong> (not the file itself)</li>
+                <li>This URL is <strong>visible to all authenticated users</strong> (required for group invitations)</li>
+                <li>The photo is <strong>cached locally</strong> on your device for offline display</li>
+                <li>Deleting your account <strong>removes the URL</strong> from our servers</li>
+            </ul>
+        </div>
 
         <h3>3.2 Expense Data</h3>
         <p><strong>When you scan a receipt or create an expense:</strong></p>
@@ -303,7 +313,7 @@
         <ul>
             <li><strong>Group name</strong></li>
             <li><strong>Group emoji</strong></li>
-            <li><strong>Member list</strong> (names, emails if Firebase accounts, IDs)</li>
+            <li><strong>Member list</strong> (names, emails if Firebase accounts, IDs, <strong>avatar URLs if Google accounts</strong>)</li>
             <li><strong>Balances</strong> (amounts owed between members)</li>
             <li><strong>Shared expense history</strong></li>
             <li><strong>Settlements</strong> (completed reimbursements)</li>
@@ -360,6 +370,7 @@
             <li><strong>Synchronization</strong>: Cloud Firestore to access your data across multiple devices</li>
             <li><strong>Push Notifications</strong>: Firebase Cloud Messaging for budget alerts, new group expenses, reimbursements</li>
             <li><strong>Group Invitations</strong>: Generation of links/QR codes with temporary tokens (30-day expiration)</li>
+            <li><strong>Avatar Display</strong>: Google profile photos cached locally for offline access</li>
         </ul>
 
         <h3>4.2 Service Improvement</h3>
@@ -369,20 +380,17 @@
             <li><strong>A/B Testing</strong>: User interface optimization</li>
         </ul>
 
-       <!-- Section 4.3 Advertising -->
-<section id="advertising">
-  <h2>4.3 Advertising</h2>
-  <p>Google AdMob displays banner ads in the application.</p>
-  
-  <h3>Data shared with AdMob:</h3>
-  <ul>
-    <li>Advertising identifier (AAID/IDFA)</li>
-    <li>IP address</li>
-    <li>In-app browsing data</li>
-  </ul>
-  
-  <p><strong>Note:</strong> Personalized ads can be disabled in your device system settings (not in-app).</p>
-</section>
+        <h3>4.3 Advertising</h3>
+        <p>Google AdMob displays banner ads in the application.</p>
+        
+        <p><strong>Data shared with AdMob:</strong></p>
+        <ul>
+            <li>Advertising identifier (AAID/IDFA)</li>
+            <li>IP address</li>
+            <li>In-app browsing data</li>
+        </ul>
+        
+        <p><strong>Note:</strong> Personalized ads can be disabled in your device system settings (not in-app).</p>
 
         <h2>5. Data Sharing</h2>
 
@@ -390,6 +398,7 @@
         <p><strong>When you join a group:</strong></p>
         <ul>
             <li>Your <strong>name</strong> is visible to all members</li>
+            <li>Your <strong>profile photo</strong> (if Google account) is visible to all members</li>
             <li>Your <strong>shared expenses</strong> in the group are visible</li>
             <li>Your <strong>balances</strong> (amounts owed/receivable) are visible</li>
         </ul>
@@ -411,12 +420,12 @@
             <tbody>
                 <tr>
                     <td><strong>Firebase Authentication</strong></td>
-                    <td>Email, UID, name</td>
+                    <td>Email, UID, name, avatar URL</td>
                     <td>Secure authentication</td>
                 </tr>
                 <tr>
                     <td><strong>Cloud Firestore</strong></td>
-                    <td>All app data</td>
+                    <td>All app data (including avatar URLs)</td>
                     <td>Cloud storage sync</td>
                 </tr>
                 <tr>
@@ -459,23 +468,127 @@
             <li><strong>Secure authentication</strong>: OAuth 2.0 (Google Sign-In), bcrypt for passwords</li>
             <li><strong>Firestore Rules</strong>: Strict access restrictions:
                 <ul>
-                    <li><strong>Users</strong>: Read/write own data only (<code>/users/{userId}</code>)</li>
-                    <li><strong>Groups</strong>: Public read for ALL authenticated users (required for QR code/link invitations), write only for members</li>
-                    <li><strong>Expenses</strong>: Access only for group members or solo group owner</li>
-                    <li><strong>Invite tokens</strong>: Public read for ALL users (anonymous access for invitation links), authenticated write/delete</li>
-                    <li><strong>Reports</strong>: Read only by reporter, create only</li>
-                    <li><strong>Settlements/Disputes</strong>: Members only</li>
+                    <li><strong>Users</strong>: 
+                        <ul>
+                            <li>✅ Read: Own data only (<code>/users/{userId}</code>)</li>
+                            <li>✅ Write: Owner OR initial FCM token setup</li>
+                        </ul>
+                    </li>
+                    <li><strong>Groups</strong>: 
+                        <ul>
+                            <li>✅ Read: ALL authenticated users (required for QR/link invitations)</li>
+                            <li>✅ Create: Authenticated users only</li>
+                            <li>✅ Update: Group members OR admins only</li>
+                            <li>✅ Delete: Group members only</li>
+                        </ul>
+                    </li>
+                    <li><strong>Expenses</strong>: 
+                        <ul>
+                            <li>✅ List (queries): ALL authenticated users</li>
+                            <li>✅ Get (specific document): Group members OR solo owner only</li>
+                            <li>✅ Create/Update/Delete: Group members OR solo owner only</li>
+                        </ul>
+                    </li>
+                    <li><strong>Invite tokens</strong>: 
+                        <ul>
+                            <li>⚠️ Read: <strong>EVERYONE</strong> (including non-authenticated users)</li>
+                            <li>✅ Create: Group members only</li>
+                            <li>✅ Delete: Authenticated users only</li>
+                        </ul>
+                    </li>
+                    <li><strong>Reports</strong>: 
+                        <ul>
+                            <li>✅ Read: Reporter only</li>
+                            <li>✅ Create: Authenticated users (auto-set status "pending")</li>
+                            <li>❌ Update/Delete: Forbidden (manual admin review only)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Debt reminders</strong>: 
+                        <ul>
+                            <li>❌ Read/Write: <strong>Forbidden</strong> (Cloud Functions only)</li>
+                            <li>🔒 Used for rate limiting (2 reminders/day per pair)</li>
+                            <li>🗑️ Auto-deleted after 7 days</li>
+                        </ul>
+                    </li>
+                    <li><strong>Settlements/Disputes</strong>: Group members only</li>
                 </ul>
             </li>
         </ul>
 
         <div class="warning">
-            <p><strong>Security Trade-off:</strong> Group basic info (name, emoji, participants) is publicly readable by authenticated users to enable QR code/link invitations. This is a necessary trade-off for invitation functionality.</p>
+            <p><strong>⚠️ Security Trade-offs (Required for Core Features):</strong></p>
+            <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background-color: #FF9800; color: white;">
+                        <th style="padding: 12px; text-align: left;">Public Data</th>
+                        <th style="padding: 12px; text-align: left;">Reason</th>
+                        <th style="padding: 12px; text-align: left;">Mitigation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                            <strong>Group basic info</strong><br>
+                            (name, emoji, participants, avatar URLs)
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                            QR code/link invitations require <strong>authenticated read access</strong> to display group preview
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                            • Expense details remain private<br>
+                            • Only names + avatars visible<br>
+                            • No email/phone exposed
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                            <strong>Invite tokens</strong><br>
+                            (groupId, expiry date)
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                            QR codes/links must work <strong>before authentication</strong> (anonymous access)
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                            • 30-day auto-expiration<br>
+                            • Single-use validation<br>
+                            • Rate limiting (10/min)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">
+                            <strong>Expense list queries</strong><br>
+                            (metadata only)
+                        </td>
+                        <td style="padding: 10px;">
+                            Firebase query limitations require <strong>list</strong> access for filtering
+                        </td>
+                        <td style="padding: 10px;">
+                            • Queries filtered client-side<br>
+                            • Document content secured (GET)<br>
+                            • Status field prevents deleted items
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 15px;"><strong>🔒 What remains PRIVATE:</strong></p>
+            <ul>
+                <li>✅ Expense amounts (document GET protected)</li>
+                <li>✅ Item details (document GET protected)</li>
+                <li>✅ Personal budgets (user-scoped collection)</li>
+                <li>✅ Email addresses (not stored in groups)</li>
+                <li>✅ FCM tokens (write-only for Cloud Functions)</li>
+            </ul>
         </div>
 
         <ul>
             <li><strong>Invitation tokens</strong>: Automatic expiration after 30 days</li>
-            <li><strong>Server-side validation</strong>: Cloud Functions for sensitive operations (disputes, settlements)</li>
+            <li><strong>Server-side validation</strong>: Cloud Functions for sensitive operations (disputes, settlements, debt reminders)</li>
+            <li><strong>Rate limiting</strong>: 
+                <ul>
+                    <li>Debt reminders: Max 2/day per user pair (7-day history)</li>
+                    <li>Invite token validation: Max 10/minute (local throttle)</li>
+                </ul>
+            </li>
         </ul>
 
         <h3>6.2 Organizational Measures</h3>
@@ -530,6 +643,11 @@
                     <td>Budget tracking</td>
                 </tr>
                 <tr>
+                    <td><strong>Avatar URLs</strong></td>
+                    <td>While account active</td>
+                    <td>Profile display (cached locally for offline)</td>
+                </tr>
+                <tr>
                     <td><strong>Crashlytics logs</strong></td>
                     <td>90 days</td>
                     <td>Debugging</td>
@@ -545,43 +663,38 @@
                     <td>Performance</td>
                 </tr>
                 <tr>
+                    <td><strong>Debt reminders</strong></td>
+                    <td>7 days</td>
+                    <td>Rate limiting (2/day per pair)</td>
+                </tr>
+                <tr>
+                    <td><strong>Empty groups</strong></td>
+                    <td>90 days after last activity</td>
+                    <td>Storage optimization (0 active members)</td>
+                </tr>
+                <tr>
                     <td><strong>Reports</strong></td>
                     <td>Indefinite (manual review)</td>
                     <td>Community safety</td>
                 </tr>
+                <tr>
+                    <td><strong>Resolved reports</strong></td>
+                    <td>1 year then archived</td>
+                    <td>Legal compliance (moved to reports_archive)</td>
+                </tr>
             </tbody>
         </table>
-
-        <tr>
-  <td><strong>Debt reminders</strong></td>
-  <td>7 days</td>
-  <td>Rate limiting (2/day per pair)</td>
-</tr>
-<tr>
-  <td><strong>Empty groups</strong></td>
-  <td>90 days after last activity</td>
-  <td>Storage optimization</td>
-</tr>
-<tr>
-  <td><strong>Resolved reports</strong></td>
-  <td>1 year then archived</td>
-  <td>Legal compliance</td>
-</tr>
 
         <h3>7.2 Automatic Deletion</h3>
         <ul>
             <li><strong>Soft delete groups</strong>: Marked as deleted for you, permanently deleted when all members have deleted it</li>
-            <li><strong>Expired tokens</strong>: Automatic cleanup via Cloud Functions</li>
+            <li><strong>Expired tokens</strong>: Automatic cleanup via Cloud Functions (30 days)</li>
             <li><strong>Ephemeral documents</strong>: Push notifications deleted after sending</li>
+            <li><strong>Debt reminders</strong>: Deleted after 7 days (rate limiting only)</li>
+            <li><strong>Empty groups</strong>: Deleted after 90 days of inactivity (0 active members)</li>
+            <li><strong>Resolved reports</strong>: Archived after 1 year (moved to <code>reports_archive</code> collection)</li>
+            <li><strong>Avatar URLs</strong>: Removed from Firestore when account is deleted (local cache cleared on app uninstall)</li>
         </ul>
-        <ul>
-  <li><strong>Soft delete groups</strong>: Marked as deleted for you, permanently deleted when all members have deleted it</li>
-  <li><strong>Expired tokens</strong>: Automatic cleanup via Cloud Functions (30 days)</li>
-  <li><strong>Ephemeral documents</strong>: Push notifications deleted after sending</li>
-  <li><strong>Debt reminders</strong>: Deleted after 7 days (rate limiting only)</li>
-  <li><strong>Empty groups</strong>: Deleted after 90 days of inactivity (0 active members)</li>
-  <li><strong>Resolved reports</strong>: Archived after 1 year (moved to reports_archive collection)</li>
-</ul>
 
         <h2>8. Your Rights (GDPR)</h2>
         <p>As a European user, you have the following rights:</p>
@@ -596,6 +709,7 @@
         <ul>
             <li>Name: Profile > Edit name</li>
             <li>Email: Contact <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></li>
+            <li>Avatar: Sign out and sign in again with Google (auto-update)</li>
         </ul>
 
         <h3>8.3 Right to Erasure (Art. 17 GDPR)</h3>
@@ -610,6 +724,7 @@
             <ul>
                 <li><strong>Permanent</strong> account deletion</li>
                 <li>Loss of <strong>all</strong> expense history</li>
+                <li>Avatar URL removed from Firestore</li>
                 <li>Data shared in groups remains visible (name anonymized as "Deleted User")</li>
             </ul>
         </div>
@@ -617,22 +732,24 @@
         <h3>8.4 Right to Restriction (Art. 18 GDPR)</h3>
         <p>You can request to limit processing of your data.</p>
         <p><strong>How:</strong> Email <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
-        <h3 id="account-deletion">8.4bis Account Deletion and Data Erasure</h3>
-        
-<p>You can permanently delete your ShareSpend account and all related data at any time.</p>
-<p><strong>How:</strong></p>
-<ul>
-  <li><strong>In-app:</strong> Go to <em>Profile → Privacy → Delete Account</em></li>
-  <li><strong>Or by email:</strong> Send a deletion request from your registered email to 
-    <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a>
-  </li>
-</ul>
-<p>All your data stored in Firebase (authentication, groups, expenses, and budgets) will be permanently deleted within <strong>30 days</strong> after verification.</p>
-<p>No data is retained beyond that period.</p>
-        <h3 id="partial-deletion">8.4ter Partial Data Deletion</h3>
-<p>Users can delete their personal “solo” budgets and data stored in Firestore without deleting their account.</p>
-<p>This option is available directly in the app under <strong>Settings → Privacy → Clear Solo Data</strong>.</p>
-<p>Group data and shared expenses are not affected by this operation.</p>
+
+        <h3>8.4bis Account Deletion and Data Erasure</h3>
+        <p>You can permanently delete your ShareSpend account and all related data at any time.</p>
+        <p><strong>How:</strong></p>
+        <ul>
+            <li><strong>In-app:</strong> Go to <em>Profile → Privacy → Delete Account</em></li>
+            <li><strong>Or by email:</strong> Send a deletion request from your registered email to 
+                <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a>
+            </li>
+        </ul>
+        <p>All your data stored in Firebase (authentication, groups, expenses, budgets, and avatar URLs) will be permanently deleted within <strong>30 days</strong> after verification.</p>
+        <p>No data is retained beyond that period.</p>
+
+        <h3>8.4ter Partial Data Deletion</h3>
+        <p>Users can delete their personal "solo" budgets and data stored in Firestore without deleting their account.</p>
+        <p>This option is available directly in the app under <strong>Settings → Privacy → Clear Solo Data</strong>.</p>
+        <p>Group data and shared expenses are not affected by this operation.</p>
+
         <h3>8.5 Right to Data Portability (Art. 20 GDPR)</h3>
         <p>You can retrieve your data in a structured format (JSON).</p>
         <p><strong>How:</strong></p>
@@ -645,23 +762,21 @@
         <p>You can object to the processing of your data.</p>
         <p><strong>How:</strong> Email <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
 
-        <!-- Section 8.7 Right to Withdraw Consent -->
-<section id="withdraw-consent">
-  <h2>8.7 Right to Withdraw Consent</h2>
-  <p>You can withdraw your consent at any time (does not affect the lawfulness of prior processing).</p>
-  
-  <h3>How:</h3>
-  <ul>
-    <li><strong>Account:</strong> Delete account</li>
-  </ul>
-</section>
+        <h3>8.7 Right to Withdraw Consent</h3>
+        <p>You can withdraw your consent at any time (does not affect the lawfulness of prior processing).</p>
+        
+        <p><strong>How:</strong></p>
+        <ul>
+            <li><strong>Push notifications:</strong> Settings > Notifications > Disable</li>
+            <li><strong>Account:</strong> Delete account</li>
+        </ul>
 
         <h3>8.8 Right to Lodge a Complaint</h3>
         <p>You can file a complaint with <strong>CNIL</strong> (France) or your national supervisory authority.</p>
         <div class="contact-info">
             <p><strong>CNIL:</strong> <a href="https://www.cnil.fr/" target="_blank">https://www.cnil.fr/</a></p>
             <p><strong>Email:</strong> <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a> (we will try to resolve the issue before complaint)</p>
-            </div>
+        </div>
 
         <h2>9. Children's Data</h2>
         <p>ShareSpend is intended for <strong>users aged 16 and older</strong> (13 with parental consent in some countries).</p>
@@ -710,6 +825,7 @@
             <li><strong>Notification preferences</strong> (budgets, groups)</li>
             <li><strong>Category cache</strong> (for performance)</li>
             <li><strong>Group cache</strong> (synchronization)</li>
+            <li><strong>Avatar cache</strong> (offline display of profile photos)</li>
             <li><strong>Last budget reset</strong> (month/year)</li>
             <li><strong>Privacy policy accepted</strong> (version + date)</li>
         </ul>
@@ -738,13 +854,23 @@
         </div>
 
         <h3>13.2 Group Data (Visibility)</h3>
-        <p><strong>Data visible to group members:</strong></p>
+        <p><strong>Data visible to ALL authenticated users (due to QR/link invitations):</strong></p>
         <ul>
-            <li>Your name</li>
+            <li>Group name</li>
+            <li>Group emoji</li>
+            <li>Member names</li>
+            <li><strong>Member profile photos</strong> (avatar URLs if Google accounts)</li>
+            <li>Number of members</li>
+        </ul>
+
+        <p><strong>Data visible to group members ONLY:</strong></p>
+        <ul>
             <li>Your shared expenses in the group</li>
             <li>Your balances (amounts owed/receivable)</li>
             <li>Your status (admin or member)</li>
+            <li>Expense details (amounts, items, splits)</li>
         </ul>
+
         <p><strong>Data NOT visible:</strong></p>
         <ul>
             <li>Your email (unless manually shared)</li>
@@ -821,17 +947,17 @@
         </div>
 
         <h3>13.6 Content Moderation</h3>
-<p>To protect all users, we use <strong>local moderation only</strong>:</p>
-<ul>
-    <li>Forbidden words list (insults, spam)</li>
-    <li>Length verification (3-100 characters)</li>
-    <li>Spam detection (repeated words)</li>
-    <li>Excessive caps detection</li>
-</ul>
-<div class="important">
-    <p><strong>Important:</strong> No external API is used for moderation. All content validation is performed locally on your device or via Firebase Cloud Functions.</p>
-</div>
-<p><strong>Legal Basis:</strong> Legitimate interest (community safety) - Art. 6(1)(f) GDPR</p>
+        <p>To protect all users, we use <strong>local moderation only</strong>:</p>
+        <ul>
+            <li>Forbidden words list (insults, spam)</li>
+            <li>Length verification (3-100 characters)</li>
+            <li>Spam detection (repeated words)</li>
+            <li>Excessive caps detection</li>
+        </ul>
+        <div class="important">
+            <p><strong>Important:</strong> No external API is used for moderation. All content validation is performed locally on your device or via Firebase Cloud Functions.</p>
+        </div>
+        <p><strong>Legal Basis:</strong> Legitimate interest (community safety) - Art. 6(1)(f) GDPR</p>
 
         <h3>13.7 Receipt Templates</h3>
         <p>To improve OCR scan accuracy, ShareSpend memorizes:</p>
@@ -909,6 +1035,16 @@
                     <td><code>notifyMemberLeft</code></td>
                     <td>groupId, memberName</td>
                     <td>Notify member left</td>
+                </tr>
+                <tr>
+                    <td><code>notifyAdminTransferred</code></td>
+                    <td>groupId, newAdminName</td>
+                    <td>Notify admin transfer</td>
+                </tr>
+                <tr>
+                    <td><code>notifyAdminRoleChanged</code></td>
+                    <td>groupId, targetUserName, isPromotion</td>
+                    <td>Notify admin role change</td>
                 </tr>
                 <tr>
                     <td><code>sendPushNotification</code></td>
@@ -1001,6 +1137,11 @@
                     <td>Art. 6(1)(b)</td>
                 </tr>
                 <tr>
+                    <td>Avatar URL storage</td>
+                    <td>Contract execution (profile display)</td>
+                    <td>Art. 6(1)(b)</td>
+                </tr>
+                <tr>
                     <td>Push notifications</td>
                     <td>Consent</td>
                     <td>Art. 6(1)(a)</td>
@@ -1089,14 +1230,16 @@
             <li><strong>CCPA</strong>: California Consumer Privacy Act (California)</li>
             <li><strong>Soft delete</strong>: Logical deletion (marked as deleted, not yet permanently erased)</li>
             <li><strong>Token</strong>: Temporary access key (invitations)</li>
+            <li><strong>Avatar URL</strong>: Web address of your Google profile photo</li>
         </ul>
 
         <h2>18. Version and History</h2>
-        <p><strong>Current Version:</strong> 1.0 (October 27, 2025)</p>
+        <p><strong>Current Version:</strong> 1.0 (November 7, 2025)</p>
         
         <p><strong>Initial Release Features:</strong></p>
         <ul>
             <li class="check">✅ Firebase Authentication (Google Sign-In + Email/Password)</li>
+            <li class="check">✅ Google profile photo integration (avatar URLs)</li>
             <li class="check">✅ Group expense sharing with QR invitations</li>
             <li class="check">✅ Multiple payers support (shared payments)</li>
             <li class="check">✅ Smart budgets with alerts (80% & 100%)</li>
@@ -1105,6 +1248,7 @@
             <li class="check">✅ 8 languages (EN, FR, IT, ES, DE, PT, NL, PL)</li>
             <li class="check">✅ Dark mode default</li>
             <li class="check">✅ Local receipt processing (Google ML Kit)</li>
+            <li class="check">✅ Debt reminders with rate limiting</li>
             <li class="check">✅ GDPR & CCPA compliant</li>
         </ul>
 
@@ -1114,6 +1258,7 @@
             <li class="check">✅ Read this privacy policy</li>
             <li class="check">✅ Understood how we collect and use your data</li>
             <li class="check">✅ Accepted the conditions described</li>
+            <li class="check">✅ Understood that your Google profile photo may be visible to other users</li>
         </ul>
         <div class="important">
             <p><strong>If you do not accept this policy, please do not use the application.</strong></p>
@@ -1182,7 +1327,7 @@
             <p><em>This privacy policy has been carefully drafted to protect your rights while providing you with maximum transparency about our practices.</em></p>
             <p style="margin-top: 20px; color: #999; font-size: 0.85em;">
                 © 2025 CatSizer Lab - ShareSpend v1.0<br>
-                Last updated: October 27, 2025
+                Last updated: November 7, 2025
             </p>
         </div>
     </div>
