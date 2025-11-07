@@ -642,11 +642,16 @@
                     <td>While account active</td>
                     <td>Budget tracking</td>
                 </tr>
-                <tr>
-                    <td><strong>Avatar URLs</strong></td>
-                    <td>While account active</td>
-                    <td>Profile display (cached locally for offline)</td>
-                </tr>
+              <tr>
+    <td><strong>Avatar URLs</strong></td>
+    <td>While account active (until "Clear Solo Data" action)</td>
+    <td>Profile display (Firestore + local cache)</td>
+</tr>
+<tr>
+    <td><strong>Avatar cache</strong> (local Flutter cache)</td>
+    <td>Until cache expiration or manual clear</td>
+    <td>Offline display (NOT cleared on sign out)</td>
+</tr>
                 <tr>
                     <td><strong>Crashlytics logs</strong></td>
                     <td>90 days</td>
@@ -693,7 +698,13 @@
             <li><strong>Debt reminders</strong>: Deleted after 7 days (rate limiting only)</li>
             <li><strong>Empty groups</strong>: Deleted after 90 days of inactivity (0 active members)</li>
             <li><strong>Resolved reports</strong>: Archived after 1 year (moved to <code>reports_archive</code> collection)</li>
-            <li><strong>Avatar URLs</strong>: Removed from Firestore when account is deleted (local cache cleared on app uninstall)</li>
+           <li><strong>Avatar URLs</strong>: Removed from Firestore when <strong>"Clear Solo Data"</strong> is executed (Settings → Data → Clear Solo Data). Local cache (Flutter image cache) is <strong>NOT explicitly cleared</strong> and will persist until:
+    <ul>
+        <li>App uninstall</li>
+        <li>Manual cache clear (device settings)</li>
+        <li>Cache expiration (Flutter default TTL)</li>
+    </ul>
+</li>
         </ul>
 
         <h2>8. Your Rights (GDPR)</h2>
@@ -733,38 +744,232 @@
         <p>You can request to limit processing of your data.</p>
         <p><strong>How:</strong> Email <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></p>
 
-        <h3>8.4bis Account Deletion and Data Erasure</h3>
-        <p>You can permanently delete your ShareSpend account and all related data at any time.</p>
-        <p><strong>How:</strong></p>
-        <ul>
-            <li><strong>In-app:</strong> Go to <em>Profile → Privacy → Delete Account</em></li>
-            <li><strong>Or by email:</strong> Send a deletion request from your registered email to 
-                <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a>
-            </li>
-        </ul>
-        <p>All your data stored in Firebase (authentication, groups, expenses, budgets, and avatar URLs) will be permanently deleted within <strong>30 days</strong> after verification.</p>
-        <p>No data is retained beyond that period.</p>
+       <h3>8.4bis Difference: Sign Out vs Clear Solo Data</h3>
+<p>ShareSpend offers <strong>two distinct actions</strong> for managing your data:</p>
 
-        <h3>8.4ter Complete Personal Data Deletion (Solo Mode)</h3>
-<p>Users can <strong>completely delete all their personal data</strong> without affecting shared groups.</p>
-<p>This option is available directly in the app under <strong>Settings → Data → Clear Solo Data</strong>.</p>
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+    <thead>
+        <tr style="background-color: #4A90E2; color: white;">
+            <th style="padding: 12px; text-align: left;">Action</th>
+            <th style="padding: 12px; text-align: left;">Location in App</th>
+            <th style="padding: 12px; text-align: left;">What is DELETED</th>
+            <th style="padding: 12px; text-align: left;">What REMAINS</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                <strong>🚪 Sign Out</strong><br>
+                <em>(Temporary disconnection)</em>
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                Settings → Account → Sign Out
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                ✅ Local cache (expenses, groups)<br>
+                ✅ FCM token (Firestore only)<br>
+                ✅ Session data (SharedPreferences)<br>
+                <br>
+                <strong>⚠️ NOT deleted:</strong><br>
+                • Avatar photo cache (Flutter image cache)
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                ✅ User profile (name, email, <strong>avatar URL</strong>)<br>
+                ✅ All expenses in Firestore<br>
+                ✅ All group memberships<br>
+                ✅ All budgets<br>
+                <br>
+                <strong>You can sign back in anytime</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                <strong>🔥 Clear Solo Data</strong><br>
+                <em>(Permanent deletion + sign out)</em>
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                Settings → Data → Clear Solo Data
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                <strong>🔥 IMMEDIATE PERMANENT DELETION:</strong><br>
+                ✅ All solo expenses (<code>solo_{userId}</code> group)<br>
+                ✅ All personal budgets<br>
+                ✅ User profile document (<strong>name, email, avatar URL</strong>)<br>
+                ✅ Local cache (except language/theme/tutorial preferences)<br>
+                ✅ FCM token<br>
+                <br>
+                <strong>⚠️ NOT deleted:</strong><br>
+                • Avatar photo cache (Flutter image cache)<br>
+                • Firebase Authentication account<br>
+                <br>
+                <strong>✅ You will be signed out immediately</strong>
+            </td>
+            <td style="padding: 12px; border-bottom: 1px solid #ddd;">
+                ✅ Firebase Authentication account<br>
+                ✅ Group memberships (name becomes "Deleted User")<br>
+                ✅ Shared expenses (visible to other members)<br>
+                <br>
+                <strong>You can sign back in to create a new profile</strong>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <div class="important">
-    <p><strong>⚠️ IMPORTANT - What is PERMANENTLY deleted:</strong></p>
+    <p><strong>🚨 CRITICAL DIFFERENCE:</strong></p>
     <ul>
-        <li>🔥 All your solo expenses (from <code>solo_{userId}</code> group)</li>
-        <li>🔥 All your personal budgets</li>
-        <li>🔥 Your user profile (name, email, avatar URL from Firestore)</li>
-        <li>🔥 Your profile photo URL</li>
-        <li>🔥 Local cache (except language/theme preferences)</li>
-        <li>🔥 <strong>You will be signed out immediately</strong></li>
+        <li><strong>Sign Out:</strong> Your profile (<strong>including avatar URL</strong>) remains in Firestore → You keep your name/photo in groups</li>
+        <li><strong>Clear Solo Data:</strong> Your profile is <strong>DELETED from Firestore</strong> → Groups show you as "Deleted User" with no photo</li>
     </ul>
-    <p><strong>What is NOT deleted:</strong></p>
+</div>
+
+<div class="warning">
+    <p><strong>⚠️ Important Notes:</strong></p>
     <ul>
-        <li>🔒 Your Firebase Authentication account (can sign back in)</li>
-        <li>🔒 Your group memberships (remain visible to other members)</li>
-        <li>🔒 Shared expenses (visible to other members)</li>
+        <li><strong>Avatar cache:</strong> Your Google profile photo cached locally via Flutter's image cache is <strong>NOT explicitly cleared</strong> on either action. It will be automatically cleared when:
+            <ul>
+                <li>The app is uninstalled</li>
+                <li>The device cache is cleared manually</li>
+                <li>The cache expires (Flutter default TTL)</li>
+            </ul>
+        </li>
+        <li><strong>Firebase Auth:</strong> "Clear Solo Data" does <strong>NOT delete your Firebase Authentication account</strong>. Only the Firestore user profile is deleted. If you want to delete your Firebase Auth account permanently, contact <a href="mailto:thecatsizer@gmail.com">thecatsizer@gmail.com</a></li>
     </ul>
+</div>
+
+       <h3>8.4ter Clear Solo Data - Personal Data Deletion</h3>
+<p>Users can <strong>permanently delete all their personal data</strong> (solo expenses, budgets, and Firestore profile) while keeping their shared group memberships intact.</p>
+<p>This action is available in-app under <strong>Settings → Data → Clear Solo Data</strong>.</p>
+<p><strong>Function name in code:</strong> <code>_clearSoloData()</code> (see <code>settings_tab.dart</code> line ~280)</p>
+
+<div class="important">
+    <p><strong>⚠️ What is IMMEDIATELY & PERMANENTLY deleted:</strong></p>
+    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+        <thead>
+            <tr style="background-color: #EF4444; color: white;">
+                <th style="padding: 10px; text-align: left;">Data Type</th>
+                <th style="padding: 10px; text-align: left;">Firestore Collection/Document</th>
+                <th style="padding: 10px; text-align: left;">Deletion Method</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #FEE;">
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>🔥 User Profile</strong><br>
+                    (name, email, avatar URL, FCM token)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <code>users/{userId}</code>
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <code>.delete()</code> (entire document)<br>
+                    <strong>Line ~356-359 settings_tab.dart</strong>
+                </td>
+            </tr>
+            <tr style="background-color: #FEE;">
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>🔥 Solo Expenses</strong><br>
+                    (all expenses in your personal group)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <code>group_expenses</code><br>
+                    (where <code>groupId == 'solo_{userId}'</code>)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    Firestore batch delete<br>
+                    <strong>Line ~344-353 settings_tab.dart</strong>
+                </td>
+            </tr>
+            <tr style="background-color: #FEE;">
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>🔥 Personal Budgets</strong>
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <code>groups/{soloGroupId}/budgets</code>
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <code>BudgetService.clearBudgets()</code><br>
+                    <strong>Line ~340 settings_tab.dart</strong>
+                </td>
+            </tr>
+            <tr style="background-color: #FEE;">
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>🔥 Local Cache</strong><br>
+                    (expenses, groups, categories)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    SharedPreferences (device only)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    Remove all keys except:<br>
+                    • app_language<br>
+                    • default_currency<br>
+                    • enable_vibrations<br>
+                    • auto_rounding<br>
+                    • privacy_policy_accepted<br>
+                    • tutorial_completed<br>
+                    • review preferences<br>
+                    <strong>Line ~375-386 settings_tab.dart</strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p style="margin-top: 15px;"><strong>What is NOT deleted:</strong></p>
+    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+        <thead>
+            <tr style="background-color: #10B981; color: white;">
+                <th style="padding: 10px; text-align: left;">Data Type</th>
+                <th style="padding: 10px; text-align: left;">Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>✅ Firebase Authentication Account</strong>
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    Allows you to sign back in and create a new profile
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>✅ Group Memberships</strong><br>
+                    (name becomes "Deleted User")
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    Other members still see shared expenses history
+                </td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>✅ Shared Expenses</strong><br>
+                    (in multi-member groups)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    Financial history preserved for other members
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    <strong>⚠️ Avatar Photo Cache</strong><br>
+                    (Flutter image cache)
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">
+                    Not explicitly cleared (will expire or be cleared on app uninstall)
+                </td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 10px;">
+                    <strong>✅ User Preferences</strong><br>
+                    (language, theme, currency, tutorial status)
+                </td>
+                <td style="padding: 10px;">
+                    UX continuity if you sign back in
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <div class="warning">
@@ -862,7 +1067,26 @@
             <li><strong>Notification preferences</strong> (budgets, groups)</li>
             <li><strong>Category cache</strong> (for performance)</li>
             <li><strong>Group cache</strong> (synchronization)</li>
-            <li><strong>Avatar cache</strong> (offline display of profile photos)</li>
+            <li><strong>Avatar cache</strong> (offline display of profile photos)
+    <ul style="margin-top: 8px;">
+        <li>Stored via: <strong>Flutter CachedNetworkImage</strong> (system image cache)</li>
+        <li>Location: Device image cache (managed by OS)</li>
+        <li>Size: Varies (depends on number of group members)</li>
+        <li><strong>NOT explicitly cleared on:</strong>
+            <ul>
+                <li>❌ Sign Out (remains until cache expiration)</li>
+                <li>❌ Clear Solo Data (remains until cache expiration)</li>
+            </ul>
+        </li>
+        <li><strong>Automatically cleared on:</strong>
+            <ul>
+                <li>✅ App uninstall</li>
+                <li>✅ Device cache clear (Settings → Storage → Clear cache)</li>
+                <li>✅ Cache expiration (Flutter default TTL)</li>
+            </ul>
+        </li>
+    </ul>
+</li>
             <li><strong>Last budget reset</strong> (month/year)</li>
             <li><strong>Privacy policy accepted</strong> (version + date)</li>
         </ul>
